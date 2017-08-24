@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">  <!-- it's important for d3.js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/nvd3/build/nv.d3.js"></script> <!-- or use another assembly -->
+    <script src="bower_components/angular-nvd3/dist/angular-nvd3.js"></script>
+    <script src="js/dataGenerator.js"></script>
+    <script src="js/report.js"></script>
+    <script src="js/utils.js"></script>
+    <link rel="stylesheet" href="bower_components/nvd3/build/nv.d3.css">
+    <link rel="stylesheet" href="styles/styles.css" />
+    <link rel="stylesheet" href="styles/print-only.css"/>
+    <title>Отчет</title>
+</head>
+<body>
+
+<div class="pageFormat">
+    <script>
+        var lft = new Date( getUrlParam('left',window.location.href) * 1);
+        var rght = new Date( getUrlParam('right',window.location.href) * 1);
+
+
+        document.write('Отчет за период с ' + lft + ' по ' + rght);
+    </script>
+    <div ng-app="myApp">
+        <div ng-controller="myCtrl">
+            <nvd3 options="options" data="data"></nvd3>
+        </div>
+    </div>
+    <div>
+        Превышения:
+        ...
+            ...
+    </div>
+    <div  align="center">
+        <button onclick="PrintReport()" >
+            Print
+        </button>
+    </div>
+
+</div>
+<script src="js/app.js"></script>
+
+</body>
+</html>

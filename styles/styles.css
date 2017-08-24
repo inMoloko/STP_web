@@ -1,0 +1,21 @@
+.nvd3 .nv-point{opacity:1}
+
+.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
+    fill-opacity: 1;
+    stroke-opacity: 1;
+}
+.svg.nvd3-svg {
+    width: 100%;
+    height: 600px !important;
+}
+
+.button {
+    background-color: #e7e7e7;
+    border: none;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
