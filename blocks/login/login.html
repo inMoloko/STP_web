@@ -1,0 +1,16 @@
+<div class="login">
+    <form class="login__form" name="$ctrl.form">
+        <label class="login__field">
+            Пользователь<br>
+            <input type="text" ng-model="$ctrl.userName" required>
+        </label>
+        <label class="login__field">
+            Пароль<br>
+            <input type="password" ng-model="$ctrl.password" required>
+        </label>
+        <span class="login__error" ng-bind="$ctrl.error" ng-if="$ctrl.error"></span>
+        <button type="button" class="login__submit" ng-click="$ctrl.login()" ng-disabled="$ctrl.form.$invalid">
+            Войти
+        </button>
+    </form>
+</div>

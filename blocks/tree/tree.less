@@ -1,0 +1,49 @@
+.modal-list {
+  font-family: Arial, sans-serif;
+  position: absolute;
+  top: 65px;
+  left: 10px;
+  background-color: white;
+  list-style-type: none;
+  padding: 5px;
+  overflow-y: auto;
+  max-height: calc(~'100%' - ~'65px');
+  &__pick-container {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-radius: 5px;
+    //border: solid 1px black;
+    height: 30px;
+  }
+
+  &__icon, &__icon-all {
+    height: 18px;
+    width: 18px;
+    margin: 0 3px;
+  }
+  &__icon-all {
+    border: solid 1px #CCCCCC;
+    border-radius: 5px;
+  }
+
+  &__label {
+    margin-left: 6px;
+  }
+
+  &__item {
+    margin-top: 5px;
+  }
+
+  &__sectors > li > .modal-list__pick-container {
+  }
+
+  &__nodes > li > .modal-list__pick-container {
+
+  }
+
+  &__sectors, &__nodes, &__params {
+    margin: 10px 0 10px 40px;
+    list-style-type: none;
+  }
+}

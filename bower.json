@@ -1,0 +1,26 @@
+{
+  "name": "STP_web",
+  "homepage": "https://github.com/inMoloko/STP_web",
+  "authors": [
+    "nekrasovinmoloko <pitchcontrol@yandex.ru>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.6",
+    "nvd3": "^1.8.6",
+    "angular-nvd3": "^1.0.9",
+    "angular-route": "^1.6.6",
+    "angular-ui-router": "^1.0.6",
+    "angular-local-storage": "^0.7.1",
+    "angular-linq": "^1.0.2"
+  }
+}

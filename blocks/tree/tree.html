@@ -1,0 +1,60 @@
+<ul class="modal-list">
+    <li class="modal-list__item" ng-repeat="line in $ctrl.paramsList">
+        <div class="modal-list__pick-container">
+            <img class="modal-list__icon" src="images/minus.svg" ng-if="line.isEnable"
+                 ng-click="line.isEnable=!line.isEnable">
+            <img class="modal-list__icon" src="images/plus.svg" ng-if="!line.isEnable"
+                 ng-click="line.isEnable=!line.isEnable">
+            <img class="modal-list__icon-all" src="images/check.svg" ng-if="$ctrl.lineChecked(line).isChecked"
+                 ng-click="$ctrl.resetAll(line)">
+            <img class="modal-list__icon-all" src="images/minus.svg" ng-if="$ctrl.lineChecked(line).canReset"
+                 ng-click="$ctrl.resetAll(line)">
+            <div class="modal-list__icon-all" ng-if="!$ctrl.lineChecked(line).isEmpty"
+                 ng-click="$ctrl.checkAll(line)"></div>
+            <span class="modal-list__label" ng-bind="$ctrl.lineChecked(line).text"></span>
+        </div>
+        <ul class="modal-list__sectors" ng-if="line.isEnable">
+            <li class="modal-list__item" ng-repeat="sector in line.Sectors">
+                <div class="modal-list__pick-container">
+                    <img class="modal-list__icon" src="images/minus.svg" ng-if="sector.isEnable"
+                         ng-click="sector.isEnable=!sector.isEnable">
+                    <img class="modal-list__icon" src="images/plus.svg" ng-if="!sector.isEnable"
+                         ng-click="sector.isEnable=!sector.isEnable">
+                    <img class="modal-list__icon-all" src="images/check.svg" ng-if="$ctrl.lineChecked(sector).isChecked"
+                         ng-click="$ctrl.resetAll(line)">
+                    <img class="modal-list__icon-all" src="images/minus.svg" ng-if="$ctrl.lineChecked(sector).canReset"
+                         ng-click="$ctrl.resetAll(sector)">
+                    <div class="modal-list__icon-all" ng-if="!$ctrl.lineChecked(sector).isEmpty"
+                         ng-click="$ctrl.checkAll(sector)"></div>
+                    <span class="modal-list__label" ng-bind="$ctrl.lineChecked(sector).text"></span>
+                </div>
+                <ul class="modal-list__nodes" ng-repeat="node in sector.Nodes" ng-if="sector.isEnable">
+                    <li>
+                        <div class="modal-list__pick-container">
+                            <img class="modal-list__icon" src="images/minus.svg" ng-if="node.isEnable"
+                                 ng-click="node.isEnable=!node.isEnable">
+                            <img class="modal-list__icon" src="images/plus.svg" ng-if="!node.isEnable"
+                                 ng-click="node.isEnable=!node.isEnable">
+                            <img class="modal-list__icon-all" src="images/check.svg"
+                                 ng-if="$ctrl.lineChecked(node).isChecked" ng-click="$ctrl.resetAll(line)">
+                            <img class="modal-list__icon-all" src="images/minus.svg"
+                                 ng-if="$ctrl.lineChecked(node).canReset" ng-click="$ctrl.resetAll(node)">
+                            <div class="modal-list__icon-all" ng-if="!$ctrl.lineChecked(node).isEmpty"
+                                 ng-click="$ctrl.checkAll(node)"></div>
+                            <span class="modal-list__label" ng-bind="$ctrl.lineChecked(node).text"></span>
+                        </div>
+                        <ul class="modal-list__params" ng-if="node.isEnable">
+                            <li class="modal-list__item" ng-repeat="parametr in node.Parametrs">
+                                <div class="modal-list__pick-container">
+                                    <img class="modal-list__icon-all" src="images/check.svg" ng-if="parametr.isChecked">
+                                    <div class="modal-list__icon-all" ng-if="!parametr.isChecked"
+                                         ng-click="parametr.isChecked=true"></div>
+                                    <span class="modal-list__label" ng-bind="parametr.Name"></span></div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
