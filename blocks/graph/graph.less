@@ -12,12 +12,46 @@
     display: flex;
     justify-content: space-between;
   }
+  &__toolbar_right {
+    display: flex;
+    justify-content: flex-end;
+    > button {
+        margin-left: 20px;
+    }
+  }
   &__container {
     flex-grow: 1;
     display: flex;
     align-items: stretch;
   }
   &__canvas {
+  }
+  &__table {
+    width: 50%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    border: 1px solid #cccccc;
+    tr, th, td {
+      border: 1px solid #cccccc;
+    }
+    th {
+      background-color: #DDDDDD;
+    }
+    th, td {
+      padding: 2px;
+    }
+    td {
+      text-align: right;
+      input {
+        width: 100%;
+      }
+    }
+    tr > td:first-child {
+      background-color: #FFFFDD;
+    }
+    tr > td:nth-child(2) {
+      background-color: #DDFFDD;
+    }
   }
 }
 

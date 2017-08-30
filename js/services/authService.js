@@ -10,9 +10,18 @@
         authorized() {
             return !!this.localStorageService.get('authorizationData');
         }
-        get token (){
+
+        userInRole(role) {
+            let data = this.localStorageService.get('authorizationData');
+            if (!data)
+                return false;
+            return data.roles.includes(role);
+        }
+
+        get token() {
             return this.localStorageService.get('authorizationData').token;
         }
+
         login(loginData) {
             let data = `grant_type=password&username=${loginData.userName}&password=${loginData.password}`;
 
@@ -31,6 +40,7 @@
                 this.localStorageService.set('authorizationData', {
                     token: response.access_token,
                     expires: response['.expires'],
+                    roles: response.roles
                 });
 
                 deferred.resolve(response.userName);

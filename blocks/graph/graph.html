@@ -5,11 +5,11 @@
         <button class="button" ng-click="$ctrl.print()">Печать</button>
     </div>
     <!--<nvd3 options="$ctrl.options" data="$ctrl.data"></nvd3>-->
-    <svg class="graph__canvas"></svg>
+    <svg class="graph__canvas" style="height: 500px"></svg>
     <!--<a class="button" ui-sref="print">-->
     <!--Print-->
     <!--</a>-->
-    <div class="graph__toolbar">
+    <div class="graph__toolbar_right">
         <button class="button" ui-sref="graph({interval: 1})">1 час</button>
         <button class="button" ui-sref="graph({interval: 3})">3 часа</button>
         <button class="button" ui-sref="graph({interval: 12})">12 часов</button>
@@ -17,4 +17,38 @@
         <button class="button" ui-sref="graph({interval: 72})">3 суток</button>
     </div>
     <tree-component params-list="$ctrl.paramsList" ng-if="$ctrl.paramsList&&$ctrl.listEnable"></tree-component>
+    <table class="graph__table">
+        <thead>
+        <tr>
+            <th colspan="3">Дата: <span ng-bind="$ctrl.getDate()"></span></th>
+            <th colspan="2">Норма</th>
+        </tr>
+        <tr>
+            <th>Параметр</th>
+            <th>Ед.изм.</th>
+            <th>Значение</th>
+            <th>от</th>
+            <th>до</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="value in $ctrl.currentValue">
+            <td ng-bind="value.series.key"></td>
+            <td ng-bind="value.series.Parameter.MeasurementsUnit"></td>
+            <td ng-bind="value.point.y"></td>
+            <td>
+                <input type="number" ng-if="$ctrl.canEditLimits&&value.series.downErrPlcEnable==true"
+                       ng-model="value.series.Parameter.DownErrPlc"/>
+                <span ng-if="value.series.downErrPlcEnable!==true" ng-bind="value.series.Parameter.DownErrPlc"
+                      ng-dblclick="$ctrl.editMode(value.series, 'downErrPlcEnable')"></span>
+            </td>
+            <td>
+                <input type="number" ng-if="$ctrl.canEditLimits&&value.series.upErrPlcEnable==true"
+                       ng-model="value.series.Parameter.UpErrPlc" dl-enter-key="$ctrl.save(value.series)"/>
+                <span ng-if="value.series.upErrPlcEnable!==true" ng-bind="value.series.Parameter.UpErrPlc"
+                      ng-dblclick="$ctrl.editMode(value.series, 'upErrPlcEnable')"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>

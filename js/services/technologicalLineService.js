@@ -8,7 +8,6 @@
         get() {
             return this.$http.get(this.constant.apiServiceBaseUri + '/TechnologicalLine').then(response => response.data);
         }
-
     }
 
     TechnologicalLineService.$inject = ['$http', '$q', 'const'];

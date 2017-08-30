@@ -1,12 +1,15 @@
 (function () {
     class GraphController {
-        constructor(observableValueService, $state, technologicalLineService, $linq, localStorageService, $timeout) {
+        constructor(observableValueService, $state, technologicalLineService, $linq, localStorageService, $timeout, authService, parameterService, notificationService) {
             this.observableValueService = observableValueService;
             this.$timeout = $timeout;
             this.localStorageService = localStorageService;
             this.$state = $state;
             this.technologicalLineService = technologicalLineService;
             this.$linq = $linq;
+            this.authService = authService;
+            this.parameterService = parameterService;
+            this.notificationService = notificationService;
             this.listEnable = false;
             this.isBusy = false;
         }
@@ -151,12 +154,39 @@
             d3.select('svg').remove();
         }
 
+        editMode(series, paramName) {
+            if (series && this.canEditLimits) {
+                series[paramName] = true;
+            }
+        }
+
+        save(series) {
+            this.parameterService.update(series.Parameter).then(() => {
+                this.notificationService.success('Параметры обновлены');
+                series.downErrPlcEnable = false;
+                series.upErrPlcEnable = false;
+            });
+
+        }
+
+        getDate() {
+            if (!this.currentValue)
+                return;
+            let data = this.currentValue.find(i => i.point && i.point.x);
+            if (!data)
+                return;
+            return d3.time.format("%H:%M %d.%m")(data.point.x);
+        }
+
         $onInit() {
             let self = this;
             self.isBusy = true;
+
+            self.canEditLimits = this.authService.userInRole('Engineer');
+
             this.technologicalLineService.get().then(i => {
                 this.paramsList = i;
-                const params = this.$state.params.parameters.split(',').map(i => +i);
+                const params = this.$state.params.parameters ? this.$state.params.parameters.split(',').map(i => +i) : [];
                 if (this.$state.params.parameters) {
                     this.$linq
                         .Enumerable()
@@ -182,12 +212,22 @@
                     });
                 }
 
+                self.currentValue = i.map(j => {
+                    return {
+                        series: {
+                            key: j.key,
+                            Parameter: j.Parameter
+                        }
+                    }
+                });
                 const xFormat = this.$state.params.interval > 24 ? "%H:%M %d.%m" : "%H:%M:%S";
 
                 nv.addGraph(function () {
                     const chart = nv.models.lineWithFocusChart();
                     chart.useInteractiveGuideline(true);
+
                     // chart.legendPosition('top');
+
                     chart.legend.maxKeyLength(150);
                     chart.legend.width(400);
                     chart.xAxis
@@ -202,29 +242,38 @@
                     chart.yAxis
                         .tickFormat(d3.format(',.2f'));
                     chart.showLegend(false);
-                    chart.height(400);
-                    // chart.dispatch.on('renderStart', function(){
-                    //     // console.log('render complete');
-                    //     self.isBusy = false;
-                    // });
+                    chart.height(500);
+
                     chart.dispatch.on('renderEnd', function () {
                         // console.log('render complete');
                         self.$timeout(function () {
                             self.isBusy = false;
                         });
                     });
-
+                    chart.lines.dispatch.on('elementClick', function (e) {
+                        self.$timeout(function () {
+                            self.currentValue = e;
+                        });
+                    });
+                    chart.dispatch.on('mouseMove', function (e) {
+                        self.$timeout(function () {
+                            self.currentValue = e;
+                        });
+                    });
                     // chart.dispatch.on('stateChange', function(e) {
                     //     setTimeout(function () {
                     //         d3.select('.nv-legendWrap').attr('transform', 'translate(0,400)');
                     //     });
                     // });
-
                     d3.select('svg')
                         .datum(i)
                         .transition().duration(500)
                         .call(chart);
+                    //var rectArray=d3.select('.nv-group').on('click',function(d,i){alert(i)});
 
+                    // d3.select('.nvd3-svg').on('nv-focus',function (event, data) {
+                    //     console.log(event);
+                    // });
                     // d3.select('.nv-legendWrap').attr('transform', 'translate(0,400)');
                     //chart.legend.attr('transform', 'translate(0,400)');
 
@@ -256,7 +305,7 @@
     }
 
     GraphController
-        .$inject = ['observableValueService', '$state', 'technologicalLineService', '$linq', 'localStorageService', '$timeout'];
+        .$inject = ['observableValueService', '$state', 'technologicalLineService', '$linq', 'localStorageService', '$timeout', 'authService', 'parameterService', 'notificationService'];
 
     const
         component = {controller: GraphController, templateUrl: 'blocks/graph/graph.html'};

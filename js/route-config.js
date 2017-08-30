@@ -11,6 +11,11 @@ angular.module('myApp').config(['$stateProvider','$urlRouterProvider', function 
         component: 'graphComponent'
     });
     $stateProvider.state({
+        name: 'upload',
+        url: '/upload',
+        component: 'uploadComponent'
+    });
+    $stateProvider.state({
         name: 'print',
         url: '/print',
         component: 'printComponent'

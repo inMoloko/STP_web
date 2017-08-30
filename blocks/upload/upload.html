@@ -1,0 +1,8 @@
+<div class="upload">
+    <span class="upload__title">Перенесите или выберите файл конфигурации для загрузки</span>
+    <img  class="upload__drop-zone" nv-file-drop="" nv-file-over="" uploader="$ctrl.uploader" src="images/cross.svg">
+    <h2>{{$ctrl.uploader.queue[0].file.name}}</h2>
+    <button type="button" class="upload__submit button" ng-click="$ctrl.uploader.uploadAll()" ng-disabled="!$ctrl.uploader.getNotUploadedItems().length">
+        Отправить
+    </button>
+</div>
