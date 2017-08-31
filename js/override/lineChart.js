@@ -31,7 +31,7 @@ nv.models.lineChart = function () {
         , state = nv.utils.state()
         , defaultState = null
         , noData = null
-        , dispatch = d3.dispatch('stateChange', 'changeState', 'renderEnd', 'mouseMove')
+        , dispatch = d3.dispatch('stateChange', 'changeState', 'renderEnd', 'mouseMove', 'elementMouseout')
         , duration = 250
     ;
 
@@ -105,9 +105,14 @@ nv.models.lineChart = function () {
                 .update();
 
             // DEPRECATED set state.disabled
-            state.disabled = data.map(function (d) {
-                return !!d.disabled;
-            });
+            // state.disabled = data.map(function (d) {
+            //     return !!d.disabled;
+            // });
+            if (state.disabled) {
+                for (let i = 0; i < state.disabled.length; i++) {
+                    data[i].disabled = state.disabled[i];
+                }
+            }
 
             if (!defaultState) {
                 var key;
@@ -414,6 +419,7 @@ nv.models.lineChart = function () {
 
             interactiveLayer.dispatch.on("elementMouseout", function (e) {
                 lines.clearHighlights();
+                dispatch.elementMouseout(e);
             });
 
             dispatch.on('changeState', function (e) {

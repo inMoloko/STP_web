@@ -17,6 +17,7 @@
         <button class="button" ui-sref="graph({interval: 72})">3 суток</button>
     </div>
     <tree-component params-list="$ctrl.paramsList" ng-if="$ctrl.paramsList&&$ctrl.listEnable"></tree-component>
+    <!--<button ng-click="$ctrl.set()">Set</button>-->
     <table class="graph__table">
         <thead>
         <tr>
@@ -24,6 +25,7 @@
             <th colspan="2">Норма</th>
         </tr>
         <tr>
+            <!--<th width="10"></th>-->
             <th>Параметр</th>
             <th>Ед.изм.</th>
             <th>Значение</th>
@@ -33,6 +35,7 @@
         </thead>
         <tbody>
         <tr ng-repeat="value in $ctrl.currentValue">
+            <!--<td><img class="" src="images/check.svg"></td>-->
             <td ng-bind="value.series.key"></td>
             <td ng-bind="value.series.Parameter.MeasurementsUnit"></td>
             <td ng-bind="value.point.y"></td>

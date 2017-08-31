@@ -5,4 +5,5 @@
     <button type="button" class="upload__submit button" ng-click="$ctrl.uploader.uploadAll()" ng-disabled="!$ctrl.uploader.getNotUploadedItems().length">
         Отправить
     </button>
+    <div ng-if="$ctrl.link">Или <a href="{{$ctrl.link}}">скачать текущий вариант</a></div>
 </div>

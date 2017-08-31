@@ -152,7 +152,7 @@ gulp.task('js-serve', function () {
         .pipe(browserSync.stream())
         .on('error', log);
 });
-gulp.task('server', ['less-serve', 'js-serve'], function () {
+gulp.task('server', ['bower-build','less-serve', 'js-serve'], function () {
     browserSync.init({
         server: {
             baseDir: "./"

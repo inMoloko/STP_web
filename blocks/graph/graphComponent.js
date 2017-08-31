@@ -178,6 +178,15 @@
             return d3.time.format("%H:%M %d.%m")(data.point.x);
         }
 
+        set() {
+            //this.currentValue.splice(0,1);
+            //this.currentValue[0].series.disable = true;
+            //this.chart.state.disabled = [true, false, true];
+            this.chart.state.disabled = [true, true, false];
+            this.chart.update();
+
+        }
+
         $onInit() {
             let self = this;
             self.isBusy = true;
@@ -216,10 +225,13 @@
                     return {
                         series: {
                             key: j.key,
-                            Parameter: j.Parameter
-                        }
+                            Parameter: j.Parameter,
+                        },
+                        // disabled :true
                     }
                 });
+                // self.currentValue[0].disabled = true;
+
                 const xFormat = this.$state.params.interval > 24 ? "%H:%M %d.%m" : "%H:%M:%S";
 
                 nv.addGraph(function () {
@@ -241,8 +253,12 @@
                         });
                     chart.yAxis
                         .tickFormat(d3.format(',.2f'));
-                    chart.showLegend(false);
+                    chart.showLegend(true);
                     chart.height(500);
+
+                    chart.dispatch.on('stateChange', function (e) {
+                        console.log(e, self.currentValue);
+                    });
 
                     chart.dispatch.on('renderEnd', function () {
                         // console.log('render complete');
@@ -253,6 +269,16 @@
                     chart.lines.dispatch.on('elementClick', function (e) {
                         self.$timeout(function () {
                             self.currentValue = e;
+                        });
+                    });
+                    chart.dispatch.on('elementMouseout', function (e) {
+                        self.$timeout(function () {
+                            if (self.currentValue) {
+                                self.currentValue.forEach(value => {
+                                    value.point = null;
+                                });
+                            }
+
                         });
                     });
                     chart.dispatch.on('mouseMove', function (e) {
@@ -269,14 +295,10 @@
                         .datum(i)
                         .transition().duration(500)
                         .call(chart);
-                    //var rectArray=d3.select('.nv-group').on('click',function(d,i){alert(i)});
-
-                    // d3.select('.nvd3-svg').on('nv-focus',function (event, data) {
-                    //     console.log(event);
-                    // });
-                    // d3.select('.nv-legendWrap').attr('transform', 'translate(0,400)');
-                    //chart.legend.attr('transform', 'translate(0,400)');
-
+                    // chart.state.disabled = [true, true, true, true];
+                    // chart.state.disengaged = [false, false, false, false];
+                    // chart.legend.dispatch.stateChange(chart.state);
+                    // chart.update();
 
                     d3.selectAll('.nv-series').each(function (d, i) {
                         const group = d3.select(this),
@@ -295,7 +317,7 @@
                         chart.update();
                         // d3.select('.nv-legendWrap').attr('transform', 'translate(0,400)');
                     });
-
+                    self.chart = chart;
                     return chart;
 
                 });

@@ -46,9 +46,9 @@
                         <ul class="modal-list__params" ng-if="node.isEnable">
                             <li class="modal-list__item" ng-repeat="parametr in node.Parametrs">
                                 <div class="modal-list__pick-container">
-                                    <img class="modal-list__icon-all" src="images/check.svg" ng-if="parametr.isChecked">
+                                    <img class="modal-list__icon-all" src="images/check.svg" ng-if="parametr.isChecked" ng-click="parametr.isChecked=false">
                                     <div class="modal-list__icon-all" ng-if="!parametr.isChecked"
-                                         ng-click="parametr.isChecked=true"></div>
+                                         ng-click="$ctrl.checkParameter(parametr)"></div>
                                     <span class="modal-list__label" ng-bind="parametr.Name"></span></div>
                             </li>
                         </ul>
