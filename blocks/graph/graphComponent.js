@@ -43,7 +43,7 @@
 
         print() {
             if (this.$state.params.interval <= 24) {
-                this.$state.go('print');
+                this.$state.go('print',{parameters: this.$state.params.parameters});
             }
         }
 

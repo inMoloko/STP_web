@@ -20,6 +20,12 @@
             });
         }
 
+        get_Print(params) {
+            return this.$http.get(`${this.constant.apiServiceBaseUri}/ObservableValue/print?parameters=` + (params.parameters || '')).then(response => {
+                return response.data;
+            });
+        }
+
     }
 
     ObservableValueService.$inject = ['$http', '$q', 'const'];
