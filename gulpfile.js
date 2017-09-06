@@ -56,7 +56,7 @@ gulp.task('bower-build', function () {
 });
 
 gulp.task('js-prod', function () {
-    return gulp.src(['app.js', './Scripts/**/*.js', './blocks/**/*.js', './environmental/production/**/*.js', '!Scripts/bowser/bowser.js'])
+    return gulp.src(['./js/**/*.js', './blocks/**/*.js', './environmental/production/**/*.js'])
         .pipe(concat('script.js'))
         .pipe(babel({
             presets: ['es2015']
@@ -65,7 +65,7 @@ gulp.task('js-prod', function () {
         .pipe(gulp.dest('dist'));
 });
 gulp.task('js-client', function () {
-    return gulp.src(['app.js', './Scripts/**/*.js', './blocks/**/*.js', './environmental/client/**/*.js', '!Scripts/bowser/bowser.js'])
+    return gulp.src(['app.js', './Scripts/**/*.js', './blocks/**/*.js', './environmental/client/**/*.js'])
         .pipe(concat('script.js'))
         .pipe(babel({
             presets: ['es2015']
@@ -99,7 +99,7 @@ function log(error) {
 gulp.task('template', function () {
     return gulp.src(['./blocks/**/*.html', './Views/*.html'])
         .pipe(minifyHTML({quotes: true}))
-        .pipe(templateCache({root: "blocks", module: "app", filename: "templates.js"}))
+        .pipe(templateCache({root: "blocks", module: "myApp", filename: "templates.js"}))
         .pipe(gulp.dest('dist'))
         .on('error', log);
 });
@@ -115,17 +115,19 @@ gulp.task('build:content', function () {
         .on('error', log);
 });
 gulp.task('build:index', function () {
-    return gulp.src('index.prod.html', {read: true})
-        .pipe(rename('index.html'))
+    let sources = gulp.src(['dist/vendor.min.{js,css}','dist/script.js','dist/templates.js','dist/client.css'], {read: false});
+    return gulp.src('index.html', {read: true})
+        .pipe(inject(sources, {relative: true, ignorePath:'dist'}))
+        //.pipe(rename('index.html'))
         .pipe(gulp.dest('dist'))
         .on('error', log);
 });
 
 gulp.task('prod', function (callback) {
-    runSequence('build:clean', ['template', 'js-prod', 'less-prod', 'bower-build', 'build:content', 'build:index'], callback);
+    runSequence('build:clean', ['template', 'js-prod', 'less-prod', 'bower-build', 'build:content'], 'build:index', callback);
 });
 gulp.task('client', function (callback) {
-    runSequence('build:clean', ['template', 'js-client', 'less-prod', 'bower-build', 'build:content', 'build:index'], callback);
+    runSequence('build:clean', ['template', 'js-client', 'less-prod', 'bower-build', 'build:content'], 'build:index', callback);
 });
 gulp.task('build', function (callback) {
     runSequence('bower', 'inject', callback);

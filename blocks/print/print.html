@@ -1,15 +1,24 @@
 <div class="print">
-    <h1 id="HEADER" align="center"></h1>
+    <h1 id="HEADER" align="center">Отчет за <span ng-bind="$ctrl.reportDate|date:'dd.MM.yyyy'"></span> c 8:00 до 20:00</h1>
     <br>
     <br>
 
-    <table id="myTable">
+    <table class="print__report-table">
         <tr>
             <th>Время</th>
             <th>Параметр</th>
             <th>Значение</th>
             <th>Норма</th>
-            <th>Комментарий</th>
+            <th width="350">Комментарий</th>
+        </tr>
+        <tr ng-repeat="row in $ctrl.data">
+            <td ng-bind="row.id|date:'hh:mm:ss'"></td>
+            <td ng-bind="row.name"></td>
+            <td ng-bind="row.value"></td>
+            <td><span ng-bind="row.norma"></span><img width="20" height="20" align="right"
+                    ng-src="{{row.normType == 1?'blocks/print/hot.png':'blocks/print/cold.png'}}"></td>
+
+            <td></td>
         </tr>
     </table>
     <div id="signature" align="center">

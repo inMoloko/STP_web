@@ -1,22 +1,37 @@
 .print {
   margin: 1.5cm;
   width: 21cm;
-  height: 29.7cm
+  height: 29.7cm;
+
+  &__report-table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    td, th {
+      border: 1px solid #ddd;
+      text-align: center;
+      padding: 15px;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2
+    }
+    tr:hover {
+      background-color: #f5f5f5
+    }
+  }
 }
 
-
-table, td, th {
-  border: 1px solid #ddd;
-  text-align: center;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th, td {
-  padding: 15px;
-}
-tr:nth-child(even){background-color: #f2f2f2}
-tr:hover{background-color:#f5f5f5}
+//table, td, th {
+//  border: 1px solid #ddd;
+//  text-align: center;
+//}
+//
+//table {
+//
+//}
+//
+//th, td {
+//  padding: 15px;
+//}
+//tr:nth-child(even){background-color: #f2f2f2}
+//tr:hover{background-color:#f5f5f5}

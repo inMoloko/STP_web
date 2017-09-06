@@ -46,7 +46,10 @@
                 this.$state.go('print',{parameters: this.$state.params.parameters});
             }
         }
-
+        logOut() {
+            this.authService.logOut();
+            this.$state.go('login');
+        }
         toggle() {
             this.listEnable = !this.listEnable;
             if (this.listEnable === false) {
@@ -234,6 +237,8 @@
 
                 const xFormat = this.$state.params.interval > 24 ? "%H:%M %d.%m" : "%H:%M:%S";
 
+                // Для того что бы убрать график снизу переопределил nv.models.focus, строка 95: return  false
+
                 nv.addGraph(function () {
                     const chart = nv.models.lineWithFocusChart();
                     chart.useInteractiveGuideline(true);
@@ -242,6 +247,7 @@
 
                     chart.legend.maxKeyLength(150);
                     chart.legend.width(400);
+                    // chart.focusEnable(false);
                     chart.xAxis
                         .axisLabel('Время')
                         .tickFormat(function (d) {
@@ -255,7 +261,6 @@
                         .tickFormat(d3.format(',.2f'));
                     chart.showLegend(true);
                     chart.height(500);
-
                     chart.dispatch.on('stateChange', function (e) {
                         console.log(e, self.currentValue);
                     });
