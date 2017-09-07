@@ -1,9 +1,13 @@
 <div class="upload">
+    <div class="upload__toolbar-top">
+        <button class="upload__logout" ng-click="$ctrl.logOut()">Выход</button>
+    </div>
     <span class="upload__title">Перенесите или выберите файл конфигурации для загрузки</span>
     <img  class="upload__drop-zone" nv-file-drop="" nv-file-over="" uploader="$ctrl.uploader" src="images/cross.svg">
     <h2>{{$ctrl.uploader.queue[0].file.name}}</h2>
     <button type="button" class="upload__submit button" ng-click="$ctrl.uploader.uploadAll()" ng-disabled="!$ctrl.uploader.getNotUploadedItems().length">
         Отправить
     </button>
-    <div ng-if="$ctrl.link">Или <a href="{{$ctrl.link}}">скачать текущий вариант</a></div>
+    <div class="upload__link" ng-if="$ctrl.link">Или <a href="{{$ctrl.link}}">скачать текущий вариант</a></div>
+    <div class="upload__link" ng-if="!$ctrl.link">Или скачать текущий вариант</div>
 </div>

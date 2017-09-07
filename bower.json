@@ -22,6 +22,7 @@
     "angular-ui-router": "^1.0.6",
     "angular-local-storage": "^0.7.1",
     "angular-linq": "^1.0.2",
-    "angular-file-upload": "^2.5.0"
+    "angular-file-upload": "^2.5.0",
+    "angular-datepicker": "^2.0.3"
   }
 }

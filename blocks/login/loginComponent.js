@@ -13,7 +13,14 @@
         login() {
             this.authService.login(this).then(() => {
                 this.error = null;
-                this.$state.go('graph');
+                if (this.authService.userInRole('Operator')||this.authService.userInRole('Engineer') ) {
+                    this.$state.go('graph');
+                    return;
+                }
+                if(this.authService.userInRole('Administrator')){
+                    this.$state.go('upload');
+                    return;
+                }
             }, error => {
                 this.error = error;
             });

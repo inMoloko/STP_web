@@ -15,9 +15,10 @@
             if (tmp < 20)
                 reportDate.setDate(reportDate.getDate() - 1);
             this.reportDate = reportDate;
-
+            this.isBusy = true;
             this.observableValueService.get_Print(this.$state.params).then(i => {
                 this.data = i;
+                this.isBusy = false;
                 return;
 //                 var table = document.getElementById("myTable");
 //
@@ -69,6 +70,8 @@
 //                 }
 
 
+            }, i => {
+                this.isBusy = false;
             });
         }
 

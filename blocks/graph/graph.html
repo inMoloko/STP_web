@@ -1,21 +1,26 @@
-<img class="busy-indicator" src="images/Spinner.gif" ng-if="$ctrl.isBusy">
 <div class="graph" ng-class="{'graph_hidden': $ctrl.listEnable}">
     <div class="graph__toolbar-top">
         <button class="button" ng-click="$ctrl.toggle()"><img src="images/list.svg"></button>
-        <button class="button" ng-click="$ctrl.print()">Печать</button>
-        <button class="button" ng-click="$ctrl.logOut()">Выход</button>
+        <button class="button graph__print" ng-click="$ctrl.print()">Печать</button>
+        <button class="graph__logout" ng-click="$ctrl.logOut()">Выход</button>
     </div>
     <!--<nvd3 options="$ctrl.options" data="$ctrl.data"></nvd3>-->
     <svg class="graph__canvas" style="height: 500px"></svg>
     <!--<a class="button" ui-sref="print">-->
     <!--Print-->
     <!--</a>-->
+
     <div class="graph__toolbar_right">
-        <button class="button" ui-sref="graph({interval: 1})">1 час</button>
-        <button class="button" ui-sref="graph({interval: 3})">3 часа</button>
-        <button class="button" ui-sref="graph({interval: 12})">12 часов</button>
-        <button class="button" ui-sref="graph({interval: 24})">1 сутки</button>
-        <button class="button" ui-sref="graph({interval: 72})">3 суток</button>
+        <div class="graph__toolbar">
+            <div><input type="datetime" date-time ng-model="$ctrl.startPeriod" required format="DD-MM-YYYY HH:mm"></div>
+            <div><input type="datetime" date-time ng-model="$ctrl.endPeriod" required format="DD-MM-YYYY HH:mm"></div>
+            <button class="button" ng-click="$ctrl.period()">За период</button>
+        </div>
+        <button class="button" ui-sref="graph({interval: 1, startPeriod: null, endPeriod: null})">1 час</button>
+        <button class="button" ui-sref="graph({interval: 3, startPeriod: null, endPeriod: null})">3 часа</button>
+        <button class="button" ui-sref="graph({interval: 12, startPeriod: null, endPeriod: null})">12 часов</button>
+        <button class="button" ui-sref="graph({interval: 24, startPeriod: null, endPeriod: null})">1 сутки</button>
+        <button class="button" ui-sref="graph({interval: 72, startPeriod: null, endPeriod: null})">3 суток</button>
     </div>
     <tree-component params-list="$ctrl.paramsList" ng-if="$ctrl.paramsList&&$ctrl.listEnable"></tree-component>
     <!--<button ng-click="$ctrl.set()">Set</button>-->

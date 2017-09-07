@@ -6,7 +6,18 @@
         }
 
         get(params) {
-            return this.$http.get(`${this.constant.apiServiceBaseUri}/ObservableValue?interval=${params.interval || 24}&parameters=` + (params.parameters || '')).then(response => {
+
+            let url;
+            if (params.endPeriod && params.startPeriod) {
+                url = `${this.constant.apiServiceBaseUri}/ObservableValue?endPeriod=${params.endPeriod}&startPeriod=${params.startPeriod}&parameters=` + (params.parameters || '');
+            }
+            else {
+                url = `${this.constant.apiServiceBaseUri}/ObservableValue?interval=${params.interval || 24}&parameters=` + (params.parameters || '');
+            }
+
+
+
+            return this.$http.get(url).then(response => {
 
                 response.data.forEach(ov => {
                     ov.values = ov.values.map(j => {
@@ -21,7 +32,7 @@
         }
 
         get_Print(params) {
-            return this.$http.get(`${this.constant.apiServiceBaseUri}/ObservableValue/print?parameters=` + (params.parameters || '')).then(response => {
+            return this.$http.get(`${this.constant.apiServiceBaseUri}/ObservableValue/Print?parameters=` + (params.parameters || '')).then(response => {
                 return response.data;
             });
         }

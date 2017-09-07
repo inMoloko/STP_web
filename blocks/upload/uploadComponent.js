@@ -1,7 +1,9 @@
 (function () {
     class UploadController {
-        constructor(FileUploader, constants, notificationService, uploadService) {
+        constructor(FileUploader, constants, notificationService, uploadService, authService, $state) {
             this.uploadService = uploadService;
+            this.$state = $state;
+            this.authService = authService;
             this.constants = constants;
             this.uploader = new FileUploader({
                 url: constants.apiServiceBaseUri + 'Config',
@@ -19,13 +21,22 @@
                     return /xlsx/.test(item.name);
                 }
             });
-            this.uploader.onCompleteAll = () => {
+            this.uploader.onSuccessItem = (fileItem, response, status, headers) => {
                 notificationService.success('Файл успешно загружен');
+                this.uploader.clearQueue();
+            };
+            this.uploader.onErrorItem = (fileItem, response, status, headers) => {
+                notificationService.error('Произошла ошибка: ' + response.description);
                 this.uploader.clearQueue();
             }
         }
 
         $onDestroy() {
+        }
+
+        logOut() {
+            this.authService.logOut();
+            this.$state.go('login');
         }
 
         $onInit() {
@@ -36,7 +47,7 @@
 
     }
 
-    UploadController.$inject = ['FileUploader', 'const', 'notificationService', 'uploadService'];
+    UploadController.$inject = ['FileUploader', 'const', 'notificationService', 'uploadService', 'authService', '$state'];
 
     const component = {controller: UploadController, templateUrl: 'blocks/upload/upload.html'};
 

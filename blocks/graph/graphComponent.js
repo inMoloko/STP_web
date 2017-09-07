@@ -1,6 +1,7 @@
 (function () {
     class GraphController {
         constructor(observableValueService, $state, technologicalLineService, $linq, localStorageService, $timeout, authService, parameterService, notificationService) {
+            this.dateFormat = 'MM-DD-YYYY HH:mm';
             this.observableValueService = observableValueService;
             this.$timeout = $timeout;
             this.localStorageService = localStorageService;
@@ -12,44 +13,48 @@
             this.notificationService = notificationService;
             this.listEnable = false;
             this.isBusy = false;
+            this.startPeriod = this.$state.params.startPeriod ? moment(this.$state.params.startPeriod, this.dateFormat) : moment();
+            this.endPeriod = this.$state.params.endPeriod ? moment(this.$state.params.endPeriod, this.dateFormat) : moment();
         }
 
-        setDiapasone(d_prm) {
-            var cur = this.data[0].values[this.data[0].values.length - 1].x;
-            var now = new Date(cur.getTime());
+        // setDiapasone(d_prm) {
+        //     var cur = this.data[0].values[this.data[0].values.length - 1].x;
+        //     var now = new Date(cur.getTime());
+        //
+        //     if (d_prm === 'day') {
+        //         now.setDate(now.getDate() - 1);
+        //     }
+        //     if (d_prm === 'month') {
+        //         now.setMonth(now.getMonth() - 1);
+        //     }
+        //     this.options.chart.brushExtent = [now, cur];
+        // };
 
-            if (d_prm === 'day') {
-                now.setDate(now.getDate() - 1);
-            }
-            if (d_prm === 'month') {
-                now.setMonth(now.getMonth() - 1);
-            }
-            this.options.chart.brushExtent = [now, cur];
-        };
-
-        OpenReportPage(pageName) {
-            var curD = this.options.chart.brushExtent;
-            var left, right;
-            if (curD == undefined) {
-                left = $scope.data[0].values[0].x.getTime();
-                right = $scope.data[0].values[$scope.data[0].values.length - 1].x.getTime();
-            }
-            else {
-                left = curD[0].getTime();
-                right = curD[1].getTime();
-            }
-            OpenReport(pageName, left, right);
-        };
+        // OpenReportPage(pageName) {
+        //     var curD = this.options.chart.brushExtent;
+        //     var left, right;
+        //     if (curD == undefined) {
+        //         left = $scope.data[0].values[0].x.getTime();
+        //         right = $scope.data[0].values[$scope.data[0].values.length - 1].x.getTime();
+        //     }
+        //     else {
+        //         left = curD[0].getTime();
+        //         right = curD[1].getTime();
+        //     }
+        //     OpenReport(pageName, left, right);
+        // };
 
         print() {
             if (this.$state.params.interval <= 24) {
-                this.$state.go('print',{parameters: this.$state.params.parameters});
+                this.$state.go('print', {parameters: this.$state.params.parameters});
             }
         }
+
         logOut() {
             this.authService.logOut();
             this.$state.go('login');
         }
+
         toggle() {
             this.listEnable = !this.listEnable;
             if (this.listEnable === false) {
@@ -188,6 +193,33 @@
             this.chart.state.disabled = [true, true, false];
             this.chart.update();
 
+        }
+
+        period() {
+            if (!this.startPeriod || !this.endPeriod) {
+                return;
+            }
+            if (!moment.isMoment(this.startPeriod))
+                this.startPeriod = moment(this.startPeriod);
+
+            if (!moment.isMoment(this.endPeriod))
+                this.endPeriod = moment(this.endPeriod);
+
+            if (this.startPeriod.isSame(this.endPeriod, 'minute')) {
+                this.notificationService.error('Начало и окончание периода равны');
+                return;
+            }
+            if (this.startPeriod.isAfter(this.endPeriod, 'minute')) {
+                this.notificationService.error('Начало периода не может быть больше окончания');
+                return;
+            }
+            let self = this;
+            this.$state.go('graph', {
+                startPeriod: self.startPeriod.format(this.dateFormat),
+                endPeriod: self.endPeriod.format(this.dateFormat),
+                parameters: self.$state.params.parameters,
+                interval: undefined
+            });
         }
 
         $onInit() {

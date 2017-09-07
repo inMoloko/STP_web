@@ -7,7 +7,7 @@ angular.module('myApp').config(['$stateProvider','$urlRouterProvider', function 
     });
     $stateProvider.state({
         name: 'graph',
-        url: '/graph?interval&parameters',
+        url: '/graph?interval&parameters&startPeriod&endPeriod',
         component: 'graphComponent'
     });
     $stateProvider.state({

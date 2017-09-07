@@ -1,7 +1,7 @@
 /**
  * Created by Terminal on 23.08.2017.
  */
-angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-linq', 'angularFileUpload'])
+angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-linq', 'angularFileUpload', 'datePicker'])
     .run(['$transitions', 'authService', '$state', 'localStorageService',
         function ($transitions, authService, $state, localStorageService) {
             $transitions.onStart({
@@ -18,8 +18,8 @@ angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-lin
                     return state.name === 'graph';
                 },
             }, function () {
-                if(!authService.userInRole('Operator')){
-                    return $state.go('upload');
+                if(!authService.userInRole('Operator')&&!authService.userInRole('Engineer')){
+                    return $state.go('login');
                 }
             });
             $transitions.onStart({
@@ -28,8 +28,7 @@ angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-lin
                 },
             }, function () {
                 if(!authService.userInRole('Administrator')){
-                    const def = localStorageService.get('graphParams');
-                    return $state.go('graph', def);
+                    return $state.go('login');
                 }
             });
             $transitions.onStart({
