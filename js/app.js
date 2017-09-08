@@ -39,7 +39,9 @@ angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-lin
                     return state.name !== 'graph';
                 }
             }, function () {
-                const def = localStorageService.get('graphParams');
+                const def = localStorageService.get('graphParams')|| {};
+                if(!def.startPeriod && !def.startPeriod && !def.interval)
+                    def.interval = 1;
                 return $state.go("graph", def);
             });
             $transitions.onStart({

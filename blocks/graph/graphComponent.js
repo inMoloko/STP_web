@@ -1,7 +1,8 @@
 (function () {
     class GraphController {
-        constructor(observableValueService, $state, technologicalLineService, $linq, localStorageService, $timeout, authService, parameterService, notificationService) {
+        constructor(observableValueService, $state, technologicalLineService, $linq, localStorageService, $timeout, authService, parameterService, notificationService, $q) {
             this.dateFormat = 'MM-DD-YYYY HH:mm';
+            this.$q = $q;
             this.observableValueService = observableValueService;
             this.$timeout = $timeout;
             this.localStorageService = localStorageService;
@@ -45,7 +46,7 @@
         // };
 
         print() {
-            if (this.$state.params.interval <= 24) {
+            if (this.$state.params.parameters) {
                 this.$state.go('print', {parameters: this.$state.params.parameters});
             }
         }
@@ -228,7 +229,8 @@
 
             self.canEditLimits = this.authService.userInRole('Engineer');
 
-            this.technologicalLineService.get().then(i => {
+            let linesPromise = this.technologicalLineService.get();
+            linesPromise.then(i => {
                 this.paramsList = i;
                 const params = this.$state.params.parameters ? this.$state.params.parameters.split(',').map(i => +i) : [];
                 if (this.$state.params.parameters) {
@@ -242,12 +244,12 @@
                             if (params.includes(i.ParameterID)) {
                                 i.isChecked = true;
                             }
-                        })
-                    ;
+                        });
                 }
             });
 
-            this.observableValueService.get(this.$state.params).then(i => {
+            let valuesPromise = this.observableValueService.get(this.$state.params);
+            valuesPromise.then(i => {
                 const shapes = ['circle', 'cross', 'triangle-up', 'triangle-down', 'diamond', 'square'];
 
                 for (let k = 0; k < i.length; k++) {
@@ -266,7 +268,6 @@
                     }
                 });
                 // self.currentValue[0].disabled = true;
-
                 const xFormat = this.$state.params.interval > 24 ? "%H:%M %d.%m" : "%H:%M:%S";
 
                 // Для того что бы убрать график снизу переопределил nv.models.focus, строка 95: return  false
@@ -274,7 +275,7 @@
                 nv.addGraph(function () {
                     const chart = nv.models.lineWithFocusChart();
                     chart.useInteractiveGuideline(true);
-
+                    chart.noData('Нет данных, измените параметры для отображения');
                     // chart.legendPosition('top');
 
                     chart.legend.maxKeyLength(150);
@@ -359,12 +360,31 @@
 
                 });
             });
+
+            this.$q.all([linesPromise, valuesPromise]).then(() => {
+                // если параметров нет то мы берем те которые
+                // пришли с сервера
+                if (!this.$state.params.parameters && this.currentValue) {
+                    let ids = this.currentValue.map(i => i.series.Parameter.ParameterID);
+                    this.$linq
+                        .Enumerable()
+                        .From(this.paramsList)
+                        .SelectMany(i => i.Sectors)
+                        .SelectMany(i => i.Nodes)
+                        .SelectMany(i => i.Parametrs)
+                        .ForEach(i => {
+                            if (ids.includes(i.ParameterID)) {
+                                i.isChecked = true;
+                            }
+                        });
+                }
+            });
         }
 
     }
 
     GraphController
-        .$inject = ['observableValueService', '$state', 'technologicalLineService', '$linq', 'localStorageService', '$timeout', 'authService', 'parameterService', 'notificationService'];
+        .$inject = ['observableValueService', '$state', 'technologicalLineService', '$linq', 'localStorageService', '$timeout', 'authService', 'parameterService', 'notificationService', '$q'];
 
     const
         component = {controller: GraphController, templateUrl: 'blocks/graph/graph.html'};

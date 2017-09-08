@@ -74,7 +74,7 @@ gulp.task('js-client', function () {
         .pipe(gulp.dest('dist'));
 });
 gulp.task('less-prod', function () {
-    return gulp.src(['style.less', './blocks/**/*.less', './Scripts/Keyboard/jsKeyboard.css'])
+    return gulp.src(['./styles/style.{css,less}', './blocks/**/*.less'])
         .pipe(concat('client.less'))
         .pipe(less({
             paths: [path.join(__dirname, 'less', 'includes')]

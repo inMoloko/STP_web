@@ -12,7 +12,7 @@
             <th width="350">Комментарий</th>
         </tr>
         <tr ng-repeat="row in $ctrl.data">
-            <td ng-bind="row.id|date:'hh:mm:ss'"></td>
+            <td ng-bind="row.id|date:'HH:mm:ss'"></td>
             <td ng-bind="row.name"></td>
             <td ng-bind="row.value"></td>
             <td><span ng-bind="row.norma"></span><img width="20" height="20" align="right"

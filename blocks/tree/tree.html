@@ -36,7 +36,7 @@
                             <img class="modal-list__icon" src="images/plus.svg" ng-if="!node.isEnable"
                                  ng-click="node.isEnable=!node.isEnable">
                             <img class="modal-list__icon-all" src="images/check.svg"
-                                 ng-if="$ctrl.lineChecked(node).isChecked" ng-click="$ctrl.resetAll(line)">
+                                 ng-if="$ctrl.lineChecked(node).isChecked" ng-click="$ctrl.resetAll(node)">
                             <img class="modal-list__icon-all" src="images/minus.svg"
                                  ng-if="$ctrl.lineChecked(node).canReset" ng-click="$ctrl.resetAll(node)">
                             <div class="modal-list__icon-all" ng-if="!$ctrl.lineChecked(node).isEmpty"
