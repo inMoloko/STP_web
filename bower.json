@@ -23,6 +23,7 @@
     "angular-local-storage": "^0.7.1",
     "angular-linq": "^1.0.2",
     "angular-file-upload": "^2.5.0",
-    "angular-datepicker": "^2.0.3"
+    "angular-datepicker": "^2.0.3",
+    "angular-modal-service": "^0.12.1"
   }
 }

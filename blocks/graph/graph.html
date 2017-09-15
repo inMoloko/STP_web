@@ -14,7 +14,9 @@
         <div class="graph__toolbar">
             <div><input type="datetime" date-time ng-model="$ctrl.startPeriod" required format="DD-MM-YYYY HH:mm"></div>
             <div><input type="datetime" date-time ng-model="$ctrl.endPeriod" required format="DD-MM-YYYY HH:mm"></div>
-            <button class="button" ng-click="$ctrl.period()" ng-class="{'_active':$ctrl.$state.params.startPeriod&&$ctrl.$state.params.endPeriod}">За период</button>
+            <button class="button" ng-click="$ctrl.period()"
+                    ng-class="{'_active':$ctrl.$state.params.startPeriod&&$ctrl.$state.params.endPeriod}">За период
+            </button>
         </div>
         <button class="button" ui-sref="graph({interval: 1, startPeriod: null, endPeriod: null})"
                 ng-class="{'_active':$ctrl.$state.params.interval==1}">1 час
@@ -37,27 +39,30 @@
     <table class="graph__table">
         <thead>
         <tr>
-            <th colspan="3">Дата: <span ng-bind="$ctrl.getDate()"></span></th>
+            <th colspan="4">Дата: <span ng-bind="$ctrl.getDate()"></span></th>
             <th colspan="2">Норма</th>
         </tr>
         <tr>
-            <!--<th width="10"></th>-->
+            <th></th>
             <th>Параметр</th>
             <th>Ед.изм.</th>
             <th>Значение</th>
-            <th>от</th>
-            <th>до</th>
+            <th>Ниж. предел</th>
+            <th>Вер. предел</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="value in $ctrl.currentValue">
-            <!--<td><img class="" src="images/check.svg"></td>-->
+            <td width="23" ng-click="$ctrl.changeParameterVisibility(value)"
+                style="background-color: {{value.series.color}}"><img class="" src="images/check.svg"
+                                                                      ng-if="value.series.disabled!=true">
+            </td>
             <td ng-bind="value.series.key"></td>
             <td ng-bind="value.series.Parameter.MeasurementsUnit"></td>
             <td ng-bind="value.point.y"></td>
             <td>
                 <input type="number" ng-if="$ctrl.canEditLimits&&value.series.downErrPlcEnable==true"
-                       ng-model="value.series.Parameter.DownErrPlc"/>
+                       ng-model="value.series.Parameter.DownErrPlc" dl-enter-key="$ctrl.save(value.series)"/>
                 <span ng-if="value.series.downErrPlcEnable!==true" ng-bind="value.series.Parameter.DownErrPlc"
                       ng-dblclick="$ctrl.editMode(value.series, 'downErrPlcEnable')"></span>
             </td>

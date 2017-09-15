@@ -17,7 +17,7 @@ angular.module('myApp').config(['$stateProvider','$urlRouterProvider', function 
     });
     $stateProvider.state({
         name: 'print',
-        url: '/print?parameters',
+        url: '/print?parameters&startPeriod&endPeriod',
         component: 'printComponent'
     });
 }]);

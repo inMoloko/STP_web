@@ -12,7 +12,7 @@
             }, 3000);
         }
 
-        error(message) {
+        error(message = 'Произошла ошибка при выполнении запроса') {
             const x = document.getElementById("snackbar");
             x.innerText = message;
             x.classList.toggle('show');

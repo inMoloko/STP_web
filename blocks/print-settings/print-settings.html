@@ -1,0 +1,19 @@
+<div class="print-settings">
+    <div class="print-settings__container">
+        <h3>Выбор периода для печати</h3>
+        <div class="print-settings__input-container">
+            <label>Дата</label>
+            <div><input class="print-settings__date" type="datetime" min-view="date" date-time ng-model="$ctrl.startPeriod" required
+                        format="DD-MM-YYYY"></div>
+        </div>
+        <div class="print-settings__radio-container">
+            <label>Смена:</label>
+            <p><input type="radio" value="1" name="r" ng-model="$ctrl.workingShift"> 1-я смена, с 08:00 по 20:00</p>
+            <p><input type="radio" value="2" name="r" ng-model="$ctrl.workingShift"> 2-я смена, с 20:00 по 08:00</p>
+        </div>
+        <div class="print-settings__button-container">
+            <button class="button" ng-click="$ctrl.print()">ОК</button>
+            <button class="button" ng-click="$ctrl.close(false)">Отмена</button>
+        </div>
+    </div>
+</div>

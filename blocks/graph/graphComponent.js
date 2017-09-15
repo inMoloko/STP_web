@@ -1,6 +1,6 @@
 (function () {
     class GraphController {
-        constructor(observableValueService, $state, technologicalLineService, $linq, localStorageService, $timeout, authService, parameterService, notificationService, $q) {
+        constructor(observableValueService, $state, technologicalLineService, $linq, localStorageService, $timeout, authService, parameterService, notificationService, $q, ModalService) {
             this.dateFormat = 'MM-DD-YYYY HH:mm';
             this.$q = $q;
             this.observableValueService = observableValueService;
@@ -16,6 +16,7 @@
             this.isBusy = false;
             this.startPeriod = this.$state.params.startPeriod ? moment(this.$state.params.startPeriod, this.dateFormat) : moment();
             this.endPeriod = this.$state.params.endPeriod ? moment(this.$state.params.endPeriod, this.dateFormat) : moment();
+            this.ModalService = ModalService;
         }
 
         // setDiapasone(d_prm) {
@@ -46,9 +47,21 @@
         // };
 
         print() {
-            if (this.$state.params.parameters) {
-                this.$state.go('print', {parameters: this.$state.params.parameters});
-            }
+            this.ModalService.showModal({
+                templateUrl: "blocks/print-settings/print-settings.html",
+                controller: "printSettingsController",
+                controllerAs: "$ctrl"
+            }).then(result => result.close).then(result => {
+                if (result !== false) {
+                    if (this.$state.params.parameters) {
+                        this.$state.go('print', {
+                            parameters: this.$state.params.parameters,
+                            startPeriod: result.startPeriod,
+                            endPeriod: result.endPeriod
+                        });
+                    }
+                }
+            });
         }
 
         logOut() {
@@ -60,16 +73,6 @@
             this.listEnable = !this.listEnable;
             if (this.listEnable === false) {
                 if (this.paramsList && this.paramsList.length !== 0) {
-                    // const params = [];
-                    // this.paramsList.forEach(line => {
-                    //     line.sectors.forEach(sector => {
-                    //         sector.Nodes.forEach(node => {
-                    //             node.forEach(node => {
-                    //                 if(node.)
-                    //             })
-                    //         })
-                    //     })
-                    // });
                     const parameters = this.$linq
                         .Enumerable()
                         .From(this.paramsList)
@@ -188,12 +191,24 @@
         }
 
         set() {
-            //this.currentValue.splice(0,1);
-            //this.currentValue[0].series.disable = true;
-            //this.chart.state.disabled = [true, false, true];
-            this.chart.state.disabled = [true, true, false];
+
+
             this.chart.update();
 
+        }
+
+        changeParameterVisibility(value) {
+            let self = this;
+            if (value !== undefined && value.series !== undefined) {
+                let parameter = value.series.Parameter.ParameterID;
+                const result = self.observableValues.find(i => i.Parameter.ParameterID === parameter);
+                result.disabled = !result.disabled;
+                const tmp = self.currentValue.find(i => i.series.Parameter.ParameterID === parameter);
+                tmp.series.disabled = result.disabled;
+            }
+            if (self.chart) {
+                self.chart.update();
+            }
         }
 
         period() {
@@ -225,6 +240,7 @@
 
         $onInit() {
             let self = this;
+
             self.isBusy = true;
 
             self.canEditLimits = this.authService.userInRole('Engineer');
@@ -246,16 +262,19 @@
                             }
                         });
                 }
+            }, () => {
             });
 
             let valuesPromise = this.observableValueService.get(this.$state.params);
             valuesPromise.then(i => {
                 const shapes = ['circle', 'cross', 'triangle-up', 'triangle-down', 'diamond', 'square'];
+                self.observableValues = i;
 
                 for (let k = 0; k < i.length; k++) {
                     i[k].values.forEach(value => {
                         value.shape = shapes[k];
                     });
+                    // i[k].disabled =  true;
                 }
 
                 self.currentValue = i.map(j => {
@@ -263,12 +282,13 @@
                         series: {
                             key: j.key,
                             Parameter: j.Parameter,
+                            disabled: j.disabled
                         },
                         // disabled :true
                     }
                 });
                 // self.currentValue[0].disabled = true;
-                const xFormat = this.$state.params.interval > 24 ? "%H:%M %d.%m" : "%H:%M:%S";
+                const xFormat = "%H:%M %d.%m.%y";// this.$state.params.interval > 24 ? "%H:%M %d.%m" : "%H:%M:%S";
 
                 // Для того что бы убрать график снизу переопределил nv.models.focus, строка 95: return  false
 
@@ -281,27 +301,59 @@
                     chart.legend.maxKeyLength(150);
                     chart.legend.width(400);
                     // chart.focusEnable(false);
-                    chart.xAxis
-                        .axisLabel('Время')
+                    let days = [];
+                    let label = chart.xAxis
+                        .axisLabel('Дата/Время')
                         .tickFormat(function (d) {
-                            return d3.time.format(xFormat)(new Date(d));
+                            let date = new Date(d);
+                            if (!days.includes(date.getDate())) {
+                                days.push(date.getDate());
+                                return d3.time.format('%H:%M %d.%m.%y')(date);
+                            } else {
+                                return d3.time.format('%H:%M')(date);
+                            }
+                            return d3.time.format(xFormat)(date).split(' ');
                         });
+                    // chart.xAxis.tickValues(d3.time.month.range(
+                    //     new Date("2013 01"),
+                    //     new Date("2014 01"),
+                    //     1));
+                    //     .call(function (t) {
+                    //     t.each(function (d) { // for each one
+                    //         var self = d3.select(this);
+                    //         var s = self.text().split(' ');  // get the text and split it
+                    //         self.text(''); // clear it out
+                    //         self.append("tspan") // insert two tspans
+                    //             .attr("x", 0)
+                    //             .attr("dy", ".8em")
+                    //             .text(s[0]);
+                    //         self.append("tspan")
+                    //             .attr("x", 0)
+                    //             .attr("dy", ".8em")
+                    //             .text(s[1]);
+                    //     })
+                    // });
                     chart.x2Axis
                         .tickFormat(function (d) {
                             return d3.time.format(xFormat)(new Date(d));
                         });
+
                     chart.yAxis
-                        .tickFormat(d3.format(',.2f'));
-                    chart.showLegend(true);
+                        .tickFormat(d3.format('.2f'));
+                    chart.showLegend(false);
                     chart.height(500);
                     chart.dispatch.on('stateChange', function (e) {
                         console.log(e, self.currentValue);
                     });
 
+                    chart.xAxis.rotateLabels(-25);
+
                     chart.dispatch.on('renderEnd', function () {
                         // console.log('render complete');
                         self.$timeout(function () {
                             self.isBusy = false;
+
+                            // let series = chart.interactiveLayer.tooltip.data().series;
                         });
                     });
                     chart.lines.dispatch.on('elementClick', function (e) {
@@ -315,13 +367,36 @@
                                 self.currentValue.forEach(value => {
                                     value.point = null;
                                 });
+                                // const add = [];
+                                // self.observableValues.forEach(value => {
+                                //     const param = value.Parameter.ParameterID;
+                                //     const outer = self.currentValue.find(k => k.series.Parameter.ParameterID === param);
+                                //     if (!outer) {
+                                //         add.push({
+                                //             series: {
+                                //                 key: value.key,
+                                //                 Parameter: value.Parameter,
+                                //                 disabled: value.disabled
+                                //             }
+                                //         });
+                                //     }
+                                // });
+                                // self.currentValue = self.currentValue.concat(add);
                             }
-
                         });
                     });
-                    chart.dispatch.on('mouseMove', function (e) {
+                    chart.dispatch.on('mouseMove', function (newValue) {
                         self.$timeout(function () {
-                            self.currentValue = e;
+                            self.currentValue.forEach(v => {
+                                v.point = null;
+                                v.series.disabled = true;
+                            });
+                            newValue.forEach(v => {
+                                const param = v.series.Parameter.ParameterID;
+                                const result = self.currentValue.find(j => j.series.Parameter.ParameterID === param);
+                                result.series.disabled = false;
+                                result.point = v.point;
+                            });
                         });
                     });
                     // chart.dispatch.on('stateChange', function(e) {
@@ -333,24 +408,18 @@
                         .datum(i)
                         .transition().duration(500)
                         .call(chart);
-                    // chart.state.disabled = [true, true, true, true];
-                    // chart.state.disengaged = [false, false, false, false];
-                    // chart.legend.dispatch.stateChange(chart.state);
-                    // chart.update();
 
-                    d3.selectAll('.nv-series').each(function (d, i) {
-                        const group = d3.select(this),
-                            circle = group.select('circle');
-                        const color = circle.style('fill');
-                        circle.remove();
-                        const symbol = group.append('path')
-                            .attr('d', d3.svg.symbol().type(shapes[i + 1]))
-                            .style('stroke', color)
-                            .style('fill', color)
-                            // ADJUST SIZE AND POSITION
-                            .attr('transform', 'scale(1.5) translate(-2,0)')
+                    let color = nv.utils.defaultColor();
+                    let tmp = [];
+                    d3.selectAll('g[class^="nv-group nv-series-"]:not(.nv-noninteractive)').each(function (d, i) {
+                        let t = color(d, i);
+                        tmp.push(t);
                     });
-
+                    // tmp = tmp.slice(0, 10);
+                    for (let index = 0; index < self.currentValue.length; index++) {
+                        self.currentValue[index].series.color = tmp[index];
+                    }
+                    let t = d3.selectAll('.nv-axis g.tick');
                     nv.utils.windowResize(function () {
                         chart.update();
                         // d3.select('.nv-legendWrap').attr('transform', 'translate(0,400)');
@@ -359,6 +428,8 @@
                     return chart;
 
                 });
+            }, () => {
+
             });
 
             this.$q.all([linesPromise, valuesPromise]).then(() => {
@@ -378,16 +449,21 @@
                             }
                         });
                 }
+            }, () => {
+                this.notificationService.error();
             });
         }
 
     }
 
     GraphController
-        .$inject = ['observableValueService', '$state', 'technologicalLineService', '$linq', 'localStorageService', '$timeout', 'authService', 'parameterService', 'notificationService', '$q'];
+        .$inject = ['observableValueService', '$state', 'technologicalLineService', '$linq', 'localStorageService', '$timeout', 'authService', 'parameterService', 'notificationService', '$q', 'ModalService'];
 
     const
         component = {controller: GraphController, templateUrl: 'blocks/graph/graph.html'};
 
-    angular.module('myApp').component('graphComponent', component);
+    angular
+        .module(
+            'myApp'
+        ).component('graphComponent', component);
 })();

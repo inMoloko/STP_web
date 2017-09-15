@@ -1,7 +1,7 @@
 /**
  * Created by Terminal on 23.08.2017.
  */
-angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-linq', 'angularFileUpload', 'datePicker'])
+angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-linq', 'angularFileUpload', 'datePicker', 'angularModalService'])
     .run(['$transitions', 'authService', '$state', 'localStorageService',
         function ($transitions, authService, $state, localStorageService) {
             $transitions.onStart({

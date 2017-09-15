@@ -1,4 +1,4 @@
-angular.module("myApp").factory('httpInterceptor', ['$q', '$rootScope', function ($q, $rootScope) {
+angular.module("myApp").factory('httpInterceptor', ['$q', '$rootScope',  function ($q, $rootScope) {
     'use strict';
     var numLoadings = 0;
 

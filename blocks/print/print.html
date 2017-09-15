@@ -1,5 +1,5 @@
 <div class="print">
-    <h1 id="HEADER" align="center">Отчет за <span ng-bind="$ctrl.reportDate|date:'dd.MM.yyyy'"></span> c 8:00 до 20:00</h1>
+    <h1 id="HEADER" align="center"><span ng-bind="$ctrl.reportDate"></span></h1>
     <br>
     <br>
 
@@ -15,7 +15,7 @@
             <td ng-bind="row.id|date:'HH:mm:ss'"></td>
             <td ng-bind="row.name"></td>
             <td ng-bind="row.value"></td>
-            <td><span ng-bind="row.norma"></span><img width="20" height="20" align="right"
+            <td style="padding: 15px 5px"><span ng-bind="row.norma"></span><img width="20" height="20" align="right"
                     ng-src="{{row.normType == 1?'images/hot.png':'images/cold.png'}}"></td>
 
             <td></td>

@@ -31,8 +31,11 @@
             });
         }
 
-        get_Print(params) {
-            return this.$http.get(`${this.constant.apiServiceBaseUri}/ObservableValue/Print?parameters=` + (params.parameters || '')).then(response => {
+        getPrint(params) {
+            // 2017-09-15T08:00:00+05:00
+            // 09-16-2017%2000:00
+            let url = `${this.constant.apiServiceBaseUri}/ObservableValue/Print?parameters=${(params.parameters || '')}&startPeriod=${params.startPeriod}&endPeriod=${params.endPeriod}`;
+            return this.$http.get(url).then(response => {
                 return response.data;
             });
         }
