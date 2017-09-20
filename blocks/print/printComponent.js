@@ -17,7 +17,7 @@
                 reportDate.setDate(reportDate.getDate() - 1);
             let st = moment(this.$state.params.startPeriod);
             let end = moment(this.$state.params.endPeriod);
-            this.reportDate = `Отчет c ${st.format('DD.MM.YYYY HH:mm')} по ${end.format('DD.MM.YYYY HH:mm')}`;
+            this.reportDate = `За период c ${st.format('HH:mm')} по ${end.format('HH:mm')}  ${end.format('DD.MM.YYYY')}г.`;
 
             this.isBusy = true;
             this.observableValueService.getPrint(this.$state.params).then(i => {
