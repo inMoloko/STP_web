@@ -35,7 +35,6 @@
         </button>
     </div>
     <tree-component params-list="$ctrl.paramsList" ng-if="$ctrl.paramsList&&$ctrl.listEnable"></tree-component>
-    <!--<button ng-click="$ctrl.set()">Set</button>-->
     <table class="graph__table">
         <thead>
         <tr>
@@ -59,7 +58,7 @@
             </td>
             <td ng-bind="value.series.key"></td>
             <td ng-bind="value.series.Parameter.MeasurementsUnit"></td>
-            <td ng-bind="value.point.y"></td>
+            <td ng-bind="value.point.y|number:2"></td>
             <td>
                 <input type="number" ng-if="$ctrl.canEditLimits&&value.series.downErrPlcEnable==true"
                        ng-model="value.series.Parameter.DownErrPlc" dl-enter-key="$ctrl.save(value.series)"/>

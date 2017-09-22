@@ -16,11 +16,11 @@
             let st = moment(this.startPeriod);
             let end;
             if (this.workingShift === "1") {
-                st = st.set({hour: 8, minute: 0, second: 0});
-                end = st.clone().set({hour: 20, minute: 0, second: 0})
+                st = st.set({hour: 6, minute: 0, second: 0});
+                end = st.clone().set({hour: 18, minute: 0, second: 0})
             } else {
-                st = st.set({hour: 20, minute: 0, second: 0});
-                end = st.clone().add('day', 1).set({hour: 8, minute: 0, second: 0});
+                st = st.set({hour: 18, minute: 0, second: 0});
+                end = st.clone().add('day', 1).set({hour: 6, minute: 0, second: 0});
             }
             this.close({
                 startPeriod: st.format('MM-DD-YYYY HH:mm'),//.format('DD-MM-YYYY HH:mm'),
