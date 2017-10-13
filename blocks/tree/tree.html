@@ -15,7 +15,7 @@
         </div>
         <ul class="modal-list__sectors" ng-if="line.isEnable">
             <li class="modal-list__item" ng-repeat="sector in line.Sectors">
-                <div class="modal-list__pick-container">
+                <div class="modal-list__pick-container" ng-if="sector.Nodes.length!==0">
                     <img class="modal-list__icon" src="images/minus.svg" ng-if="sector.isEnable"
                          ng-click="sector.isEnable=!sector.isEnable">
                     <img class="modal-list__icon" src="images/plus.svg" ng-if="!sector.isEnable"

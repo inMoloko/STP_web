@@ -17,7 +17,12 @@
                 return false;
             return data.roles.includes(role);
         }
-
+        get userName() {
+            let data = this.localStorageService.get('authorizationData');
+            if (!data)
+                return null;
+            return data.userName;
+        }
         get token() {
             return this.localStorageService.get('authorizationData').token;
         }
@@ -40,7 +45,8 @@
                 this.localStorageService.set('authorizationData', {
                     token: response.access_token,
                     expires: response['.expires'],
-                    roles: response.roles
+                    roles: response.roles,
+                    userName: response.userName
                 });
 
                 deferred.resolve(response.userName);

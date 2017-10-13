@@ -15,8 +15,8 @@
             let tmp = reportDate.getHours();
             if (tmp < 20)
                 reportDate.setDate(reportDate.getDate() - 1);
-            let st = moment(this.$state.params.startPeriod);
-            let end = moment(this.$state.params.endPeriod);
+            let st = moment(this.$state.params.startPeriod,'MM-dd-yyyy HH:mm');
+            let end = moment(this.$state.params.endPeriod,'MM-dd-yyyy HH:mm');
             this.reportDate = `За период c ${st.format('HH:mm')} по ${end.format('HH:mm')}  ${end.format('DD.MM.YYYY')}г.`;
 
             this.isBusy = true;

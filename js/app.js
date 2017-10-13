@@ -18,7 +18,7 @@ angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-lin
                     return state.name === 'graph';
                 },
             }, function () {
-                if(!authService.userInRole('Operator')&&!authService.userInRole('Engineer')){
+                if (!authService.userInRole('Operator') && !authService.userInRole('Engineer')) {
                     return $state.go('login');
                 }
             });
@@ -27,7 +27,7 @@ angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-lin
                     return state.name === 'upload';
                 },
             }, function () {
-                if(!authService.userInRole('Administrator')){
+                if (!authService.userInRole('Administrator')) {
                     return $state.go('login');
                 }
             });
@@ -39,8 +39,11 @@ angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-lin
                     return state.name !== 'graph';
                 }
             }, function () {
-                const def = localStorageService.get('graphParams')|| {};
-                if(!def.startPeriod && !def.startPeriod && !def.interval)
+                let def = localStorageService.get('graphParams') || {};
+                const userName = authService.userName;
+                def = userName != null ? def[userName] : {};
+                def = def || {};
+                if (!def.startPeriod && !def.startPeriod && !def.interval)
                     def.interval = 1;
                 return $state.go("graph", def);
             });
@@ -52,7 +55,10 @@ angular.module('myApp', ['nvd3', 'ui.router', 'LocalStorageModule', 'angular-lin
                     return state.name === 'graph';
                 }
             }, function (data) {
-                localStorageService.set('graphParams', data.params());
+                const userName = authService.userName;
+                let object = localStorageService.get('graphParams') || {};
+                object[userName] = data.params();
+                localStorageService.set('graphParams', object);
             });
         }])
     .config(['$httpProvider', function ($httpProvider) {

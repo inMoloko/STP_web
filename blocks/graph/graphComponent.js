@@ -1,6 +1,6 @@
 (function () {
     class GraphController {
-        constructor(observableValueService, $state, technologicalLineService, $linq, localStorageService, $timeout, authService, parameterService, notificationService, $q, ModalService) {
+        constructor(observableValueService, $state, technologicalLineService, $linq, localStorageService, $timeout, authService, parameterService, notificationService, $q, ModalService, localSettingService) {
             this.dateFormat = 'MM-DD-YYYY HH:mm';
             this.$q = $q;
             this.observableValueService = observableValueService;
@@ -17,6 +17,7 @@
             this.startPeriod = this.$state.params.startPeriod ? moment(this.$state.params.startPeriod, this.dateFormat) : moment();
             this.endPeriod = this.$state.params.endPeriod ? moment(this.$state.params.endPeriod, this.dateFormat) : moment();
             this.ModalService = ModalService;
+            this.localSettingService = localSettingService;
         }
 
         // setDiapasone(d_prm) {
@@ -53,13 +54,13 @@
                 controllerAs: "$ctrl"
             }).then(result => result.close).then(result => {
                 if (result !== false) {
-                    if (this.$state.params.parameters) {
+                    // if (this.$state.params.parameters) {
                         this.$state.go('print', {
                             parameters: this.$state.params.parameters,
                             startPeriod: result.startPeriod,
                             endPeriod: result.endPeriod
                         });
-                    }
+                    // }
                 }
             });
         }
@@ -206,6 +207,10 @@
                 const tmp = self.currentValue.find(i => i.series.Parameter.ParameterID === parameter);
                 tmp.series.disabled = result.disabled;
             }
+            let disabled = self.currentValue.filter(i => i.series.disabled === true).map(i => i.series.Parameter.ParameterID);
+
+            this.localSettingService.disabledParams = disabled;
+
             if (self.chart) {
                 self.chart.update();
             }
@@ -276,6 +281,14 @@
                     });
                     // i[k].disabled =  true;
                 }
+                const disabled = self.localSettingService.disabledParams;
+                if (disabled) {
+                    disabled.forEach(j => {
+                        let tmp = self.observableValues.find(k => k.Parameter.ParameterID == j);
+                        if (tmp)
+                            tmp.disabled = true;
+                    });
+                }
 
                 self.currentValue = i.map(j => {
                     return {
@@ -314,25 +327,6 @@
                             }
                             return d3.time.format(xFormat)(date).split(' ');
                         });
-                    // chart.xAxis.tickValues(d3.time.month.range(
-                    //     new Date("2013 01"),
-                    //     new Date("2014 01"),
-                    //     1));
-                    //     .call(function (t) {
-                    //     t.each(function (d) { // for each one
-                    //         var self = d3.select(this);
-                    //         var s = self.text().split(' ');  // get the text and split it
-                    //         self.text(''); // clear it out
-                    //         self.append("tspan") // insert two tspans
-                    //             .attr("x", 0)
-                    //             .attr("dy", ".8em")
-                    //             .text(s[0]);
-                    //         self.append("tspan")
-                    //             .attr("x", 0)
-                    //             .attr("dy", ".8em")
-                    //             .text(s[1]);
-                    //     })
-                    // });
                     chart.x2Axis
                         .tickFormat(function (d) {
                             return d3.time.format(xFormat)(new Date(d));
@@ -367,21 +361,6 @@
                                 self.currentValue.forEach(value => {
                                     value.point = null;
                                 });
-                                // const add = [];
-                                // self.observableValues.forEach(value => {
-                                //     const param = value.Parameter.ParameterID;
-                                //     const outer = self.currentValue.find(k => k.series.Parameter.ParameterID === param);
-                                //     if (!outer) {
-                                //         add.push({
-                                //             series: {
-                                //                 key: value.key,
-                                //                 Parameter: value.Parameter,
-                                //                 disabled: value.disabled
-                                //             }
-                                //         });
-                                //     }
-                                // });
-                                // self.currentValue = self.currentValue.concat(add);
                             }
                         });
                     });
@@ -457,7 +436,7 @@
     }
 
     GraphController
-        .$inject = ['observableValueService', '$state', 'technologicalLineService', '$linq', 'localStorageService', '$timeout', 'authService', 'parameterService', 'notificationService', '$q', 'ModalService'];
+        .$inject = ['observableValueService', '$state', 'technologicalLineService', '$linq', 'localStorageService', '$timeout', 'authService', 'parameterService', 'notificationService', '$q', 'ModalService', 'localSettingService'];
 
     const
         component = {controller: GraphController, templateUrl: 'blocks/graph/graph.html'};
