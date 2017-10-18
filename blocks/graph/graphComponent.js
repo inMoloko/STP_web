@@ -55,11 +55,11 @@
             }).then(result => result.close).then(result => {
                 if (result !== false) {
                     // if (this.$state.params.parameters) {
-                        this.$state.go('print', {
-                            parameters: this.$state.params.parameters,
-                            startPeriod: result.startPeriod,
-                            endPeriod: result.endPeriod
-                        });
+                    this.$state.go('print', {
+                        parameters: this.$state.params.parameters,
+                        startPeriod: result.startPeriod,
+                        endPeriod: result.endPeriod
+                    });
                     // }
                 }
             });
@@ -273,6 +273,9 @@
             let valuesPromise = this.observableValueService.get(this.$state.params);
             valuesPromise.then(i => {
                 const shapes = ['circle', 'cross', 'triangle-up', 'triangle-down', 'diamond', 'square'];
+
+                const colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
+
                 self.observableValues = i;
 
                 for (let k = 0; k < i.length; k++) {
@@ -290,14 +293,15 @@
                     });
                 }
 
-                self.currentValue = i.map(j => {
+                let color = nv.utils.defaultColor();
+                self.currentValue = i.map((j, index) => {
                     return {
                         series: {
                             key: j.key,
                             Parameter: j.Parameter,
-                            disabled: j.disabled
+                            disabled: j.disabled,
+                            color: color(j, index)
                         },
-                        // disabled :true
                     }
                 });
                 // self.currentValue[0].disabled = true;
@@ -313,6 +317,7 @@
 
                     chart.legend.maxKeyLength(150);
                     chart.legend.width(400);
+
                     // chart.focusEnable(false);
                     let days = [];
                     let label = chart.xAxis
@@ -394,10 +399,10 @@
                         let t = color(d, i);
                         tmp.push(t);
                     });
-                    // tmp = tmp.slice(0, 10);
-                    for (let index = 0; index < self.currentValue.length; index++) {
-                        self.currentValue[index].series.color = tmp[index];
-                    }
+
+                    // for (let index = 0; index < self.currentValue.length; index++) {
+                    //     self.currentValue[index].series.color = tmp[index];
+                    // }
                     let t = d3.selectAll('.nv-axis g.tick');
                     nv.utils.windowResize(function () {
                         chart.update();
